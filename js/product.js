@@ -285,6 +285,8 @@ if (Object.keys(selected.options).length) {
 
 // ===== buynow =====
 window.buyNow = function () {
+  if (!product) return;
+
   let note = product.name;
 
   if (selected.color) note += ` | Color: ${selected.color.name}`;
@@ -292,19 +294,17 @@ window.buyNow = function () {
 
   const upiUrl =
     "upi://pay" +
-    "?pa=7385235738@okbizaxis" +
-    "&pn=Imaginary Gifts" +
-    "&am=" + finalPrice +
+    "?pa=" + encodeURIComponent(UPI_ID) +
+    "&pn=" + encodeURIComponent("Imaginary Gifts") +
+    "&am=" + encodeURIComponent(finalPrice) +
     "&cu=INR" +
     "&tn=" + encodeURIComponent(note);
 
-  // This avoids Netlify routing
-  const iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = upiUrl;
-  document.body.appendChild(iframe);
-
-  setTimeout(() => {
-    document.body.removeChild(iframe);
-  }, 1000);
+  // Netlify-safe deep link
+  const a = document.createElement("a");
+  a.href = upiUrl;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 };
