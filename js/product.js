@@ -281,3 +281,27 @@ if (Object.keys(selected.options).length) {
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   window.open(url, "_blank");
 };
+
+// ===== buynow =====
+window.buyNow = function () {
+  let note = product.name;
+
+  if (selected.color) note += ` | Color: ${selected.color.name}`;
+  if (selected.size) note += ` | Size: ${selected.size.name}`;
+
+  const upiUrl =
+    "upi://pay" +
+    "?pa=7385235738@okbizaxis" +
+    "&pn=Imaginary Gifts" +
+    "&am=" + finalPrice +
+    "&cu=INR" +
+    "&tn=" + encodeURIComponent(note);
+
+  // Netlify-safe redirect
+  const a = document.createElement("a");
+  a.href = upiUrl;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
