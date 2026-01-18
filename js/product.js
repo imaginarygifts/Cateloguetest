@@ -283,25 +283,22 @@ if (Object.keys(selected.options).length) {
 };
 
 // ===== buynow =====
-window.buyNow = function () {
+window.buyNow = function() {
   let note = product.name;
 
   if (selected.color) note += ` | Color: ${selected.color.name}`;
   if (selected.size) note += ` | Size: ${selected.size.name}`;
 
-  const upiUrl =
-    "upi://pay" +
-    "?pa=7385235738@okbizaxis" +
-    "&pn=Imaginary Gifts" +
-    "&am=" + finalPrice +
-    "&cu=INR" +
-    "&tn=" + encodeURIComponent(note);
+  const params = new URLSearchParams({
+    pa: "7385235738@okbizaxis",
+    pn: "Imaginary Gifts",
+    am: finalPrice,
+    cu: "INR",
+    tn: note
+  });
 
-  // Netlify-safe redirect
-  const a = document.createElement("a");
-  a.href = upiUrl;
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  const upiUrl = `upi://pay?${params.toString()}`;
+
+  // Force open as deep link
+  window.location.href = upiUrl;
 };
