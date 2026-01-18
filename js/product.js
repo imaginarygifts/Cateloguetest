@@ -284,20 +284,27 @@ if (Object.keys(selected.options).length) {
 };
 
 // ===== buynow =====
-window.buyNow = function() {
-  let note = `${product.name}`;
+window.buyNow = function () {
+  let note = product.name;
 
   if (selected.color) note += ` | Color: ${selected.color.name}`;
   if (selected.size) note += ` | Size: ${selected.size.name}`;
 
-  if (Object.keys(selected.options).length) {
-    note += ` | Options: `;
-    Object.keys(selected.options).forEach(i => {
-      note += product.customOptions[i].label + ", ";
-    });
-  }
+  const upiUrl =
+    "upi://pay" +
+    "?pa=7385235738@okbizaxis" +
+    "&pn=Imaginary Gifts" +
+    "&am=" + finalPrice +
+    "&cu=INR" +
+    "&tn=" + encodeURIComponent(note);
 
-  const upiUrl = `upi://pay?pa=${UPI_ID}&pn=Imaginary Gifts&am=${finalPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
+  // This avoids Netlify routing
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = upiUrl;
+  document.body.appendChild(iframe);
 
-  window.location.href = upiUrl;
+  setTimeout(() => {
+    document.body.removeChild(iframe);
+  }, 1000);
 };
