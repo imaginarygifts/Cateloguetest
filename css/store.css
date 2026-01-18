@@ -132,16 +132,6 @@ body {
   backdrop-filter: blur(10px);
 }
 
-.order-btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  background: linear-gradient(135deg,#feda75,#fa7e1e,#d62976,#962fbf);
-  color: white;
-}
 .slider {
   display: flex;
   overflow-x: auto;
