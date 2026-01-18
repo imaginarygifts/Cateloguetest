@@ -4,6 +4,7 @@ import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/fireba
 
 // ===== CONFIG =====
 const WHATSAPP_NUMBER = "917030191819";
+const UPI_ID = "7385235738@okbizaxis";
 
 // ===== GLOBALS =====
 const id = new URLSearchParams(window.location.search).get("id");
@@ -284,21 +285,19 @@ if (Object.keys(selected.options).length) {
 
 // ===== buynow =====
 window.buyNow = function() {
-  let note = product.name;
+  let note = `${product.name}`;
 
   if (selected.color) note += ` | Color: ${selected.color.name}`;
   if (selected.size) note += ` | Size: ${selected.size.name}`;
 
-  const params = new URLSearchParams({
-    pa: "7385235738@okbizaxis",
-    pn: "Imaginary Gifts",
-    am: finalPrice,
-    cu: "INR",
-    tn: note
-  });
+  if (Object.keys(selected.options).length) {
+    note += ` | Options: `;
+    Object.keys(selected.options).forEach(i => {
+      note += product.customOptions[i].label + ", ";
+    });
+  }
 
-  const upiUrl = `upi://pay?${params.toString()}`;
+  const upiUrl = `upi://pay?pa=${UPI_ID}&pn=Imaginary Gifts&am=${finalPrice}&cu=INR&tn=${encodeURIComponent(note)}`;
 
-  // Force open as deep link
   window.location.href = upiUrl;
 };
