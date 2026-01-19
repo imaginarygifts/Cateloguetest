@@ -285,20 +285,46 @@ if (Object.keys(selected.options).length) {
 
 // ===== buynow =====
 window.buyNow = function () {
-  let note = product.name;
+  if (!finalPrice || finalPrice <= 0) {
+    alert("Invalid amount");
+    return;
+  }
 
-  if (selected.color) note += ` | Color: ${selected.color.name}`;
-  if (selected.size) note += ` | Size: ${selected.size.name}`;
+  const options = {
+    key: "rzp_live_pfVyl37GhqWTGK", // your Razorpay Key ID
+    amount: Math.round(finalPrice * 100), // in paise
+    currency: "INR",
+    name: "Imaginary Gifts",
+    description: product.name,
+    image: product.images?.[0] || "",
+    handler: function (response) {
+      alert("Payment Successful!");
 
-  const upiUrl =
-    "upi://pay" +
-    "?pa=7385235738@okbizaxis" +
-    "&pn=Imaginary Gifts" +
-    "&am=" + finalPrice +
-    "&cu=INR" +
-    "&tn=" + encodeURIComponent(note);
+      // Optional: WhatsApp auto-message after payment
+      let msg = `✅ Payment Received\n\n`;
+      msg += `Product: ${product.name}\n`;
+      msg += `Amount: ₹${finalPrice}\n`;
+      msg += `Payment ID: ${response.razorpay_payment_id}\n`;
 
-  const a = document.createElement("a");
-  a.href = upiUrl;
-  a.click();
+      const wa = `https://wa.me/917030191819?text=${encodeURIComponent(msg)}`;
+      window.open(wa, "_blank");
+    },
+    prefill: {
+      name: "",
+      email: "",
+      contact: ""
+    },
+    theme: {
+      color: "#00c3ff"
+    },
+    method: {
+      upi: true,
+      card: false,
+      netbanking: false,
+      wallet: false
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
 };
