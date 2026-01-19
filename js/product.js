@@ -4,7 +4,6 @@ import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/fireba
 
 // ===== CONFIG =====
 const WHATSAPP_NUMBER = "917030191819";
-const UPI_ID = "7385235738@okbizaxis";
 
 // ===== GLOBALS =====
 const id = new URLSearchParams(window.location.search).get("id");
