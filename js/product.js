@@ -296,13 +296,8 @@ window.buyNow = function () {
     name: "Imaginary Gifts",
     description: product.name,
     image: product.images?.[0] || "",
-
-    handler: function (response) {
-  const msg = `Payment Successful!\n\nProduct: ${product.name}\nAmount: ₹${finalPrice}\nPayment ID: ${response.razorpay_payment_id}`;
-
-  const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-
-  window.location.href = waUrl;
+handler: function (response) {
+  alert("Payment Successful!");
 }
 
       let msg = `✅ Payment Received\n\n`;
