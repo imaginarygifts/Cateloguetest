@@ -284,45 +284,17 @@ if (Object.keys(selected.options).length) {
 
 // ===== buynow =====
 window.buyNow = function () {
-  if (!finalPrice || finalPrice <= 0) {
-    alert("Invalid amount");
-    return;
-  }
-
-  const options = {
-    key: "rzp_live_pfVyI37GhqWTGK", // TEST KEY
-    amount: Math.round(finalPrice * 100), // in paise
-    currency: "INR",
-    name: "Imaginary Gifts",
-    description: product.name,
-    image: product.images?.[0] || "",
-    handler: function (response) {
-      alert("Payment Successful!");
-
-      let msg = `✅ Payment Received\n\n`;
-      msg += `Product: ${product.name}\n`;
-      msg += `Amount: ₹${finalPrice}\n`;
-      msg += `Payment ID: ${response.razorpay_payment_id}\n`;
-
-      const wa = `https://wa.me/917030191819?text=${encodeURIComponent(msg)}`;
-      window.open(wa, "_blank");
-    },
-    modal: {
-      ondismiss: function () {
-        console.log("Payment popup closed");
-      }
-    },
-    theme: {
-      color: "#00c3ff"
-    },
-    method: {
-      upi: true,
-      card: true,
-      netbanking: false,
-      wallet: false
-    }
+  const data = {
+    product,
+    finalPrice,
+    color: selected.color,
+    size: selected.size,
+    options: selected.options,
+    optionValues: selected.optionValues,
+    imageLinks: selected.imageLinks
   };
 
-  const rzp = new Razorpay(options);
-  rzp.open();
+  localStorage.setItem("checkoutData", JSON.stringify(data));
+
+  location.href = "order.html";
 };
