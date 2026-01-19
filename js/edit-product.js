@@ -45,6 +45,23 @@ const editCustomPrice = document.getElementById("editCustomPrice");
 const editCustomChoices = document.getElementById("editCustomChoices");
 const editCustomList = document.getElementById("editCustomList");
 
+// Payment & Discounts inputs
+const allowOnline = document.getElementById("allowOnline");
+const allowCOD = document.getElementById("allowCOD");
+const allowAdvance = document.getElementById("allowAdvance");
+
+const onlineDiscountType = document.getElementById("onlineDiscountType");
+const onlineDiscountValue = document.getElementById("onlineDiscountValue");
+
+const codDiscountType = document.getElementById("codDiscountType");
+const codDiscountValue = document.getElementById("codDiscountValue");
+
+const advanceDiscountType = document.getElementById("advanceDiscountType");
+const advanceDiscountValue = document.getElementById("advanceDiscountValue");
+
+const advanceType = document.getElementById("advanceType");
+const advanceValue = document.getElementById("advanceValue");
+
 // Related Designs
 let relatedDesigns = [];
 let allProducts = [];
