@@ -409,3 +409,14 @@ li {
   overflow-y: auto;
   padding-right: 6px;
 }
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.row input, .row select {
+  flex: 1;
+}
