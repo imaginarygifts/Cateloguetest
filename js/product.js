@@ -285,59 +285,42 @@ if (Object.keys(selected.options).length) {
 
 // ===== buynow =====
 window.buyNow = function () {
-  if (!product) {
-    alert("Product not loaded");
+  if (!finalPrice || finalPrice <= 0) {
+    alert("Invalid amount");
     return;
   }
 
-  let note = `${product.name}`;
-
-  if (selected.color) note += ` | Color: ${selected.color.name}`;
-  if (selected.size) note += ` | Size: ${selected.size.name}`;
-
-  const options = { 
-"key: "rzp_test_8OmRCO9SiPeXWg" // Your key
-    amount: finalPrice * 100, // Razorpay uses paise
+  const options = {
+    key: "rzp_test_8OmRCO9SiPeXWg", // TEST KEY
+    amount: Math.round(finalPrice * 100), // in paise
     currency: "INR",
     name: "Imaginary Gifts",
-    description: note,
+    description: product.name,
     image: product.images?.[0] || "",
     handler: function (response) {
-      // After payment success → redirect to WhatsApp
+      alert("Payment Successful!");
 
-      let msg = `✅ Payment Successful!\n\n`;
+      let msg = `✅ Payment Received\n\n`;
       msg += `Product: ${product.name}\n`;
+      msg += `Amount: ₹${finalPrice}\n`;
+      msg += `Payment ID: ${response.razorpay_payment_id}\n`;
 
-      if (selected.color) msg += `Color: ${selected.color.name}\n`;
-      if (selected.size) msg += `Size: ${selected.size.name}\n`;
-
-      if (Object.keys(selected.options).length) {
-        msg += `Options:\n`;
-        Object.keys(selected.options).forEach(i => {
-          const label = product.customOptions[i].label;
-          const value = selected.optionValues[i] || "Selected";
-          msg += `- ${label}: ${value}\n`;
-
-          if (selected.imageLinks[i]) {
-            msg += `  Image: ${selected.imageLinks[i]}\n`;
-          }
-        });
-      }
-
-      msg += `\nAmount Paid: ₹${finalPrice}\n`;
-      msg += `Payment ID: ${response.razorpay_payment_id}\n\n`;
-      msg += `Product Link:\n${window.location.href}`;
-
-      const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-      window.location.href = waUrl;
+      const wa = `https://wa.me/917030191819?text=${encodeURIComponent(msg)}`;
+      window.open(wa, "_blank");
     },
-    prefill: {
-      name: "",
-      email: "",
-      contact: ""
+    modal: {
+      ondismiss: function () {
+        console.log("Payment popup closed");
+      }
     },
     theme: {
-      color: "#0ef"
+      color: "#00c3ff"
+    },
+    method: {
+      upi: true,
+      card: true,
+      netbanking: false,
+      wallet: false
     }
   };
 
