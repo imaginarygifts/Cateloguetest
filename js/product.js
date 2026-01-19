@@ -291,7 +291,7 @@ window.buyNow = function () {
   }
 
   const options = {
-    key: "rzp_live_pfVyl37GhqWTGK", // your Razorpay Key ID
+    key: "rzp_test_8OmRCO9SiPeXWg", // TEST KEY
     amount: Math.round(finalPrice * 100), // in paise
     currency: "INR",
     name: "Imaginary Gifts",
@@ -300,7 +300,6 @@ window.buyNow = function () {
     handler: function (response) {
       alert("Payment Successful!");
 
-      // Optional: WhatsApp auto-message after payment
       let msg = `✅ Payment Received\n\n`;
       msg += `Product: ${product.name}\n`;
       msg += `Amount: ₹${finalPrice}\n`;
@@ -309,17 +308,17 @@ window.buyNow = function () {
       const wa = `https://wa.me/917030191819?text=${encodeURIComponent(msg)}`;
       window.open(wa, "_blank");
     },
-    prefill: {
-      name: "",
-      email: "",
-      contact: ""
+    modal: {
+      ondismiss: function () {
+        console.log("Payment popup closed");
+      }
     },
     theme: {
       color: "#00c3ff"
     },
     method: {
       upi: true,
-      card: false,
+      card: true,
       netbanking: false,
       wallet: false
     }
