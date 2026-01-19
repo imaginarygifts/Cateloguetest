@@ -21,6 +21,23 @@ const catSelect = document.getElementById("category");
 const imagesInput = document.getElementById("images");
 const preview = document.getElementById("imagePreview");
 
+// Payment & Discounts inputs
+const allowOnline = document.getElementById("allowOnline");
+const allowCOD = document.getElementById("allowCOD");
+const allowAdvance = document.getElementById("allowAdvance");
+
+const onlineDiscountType = document.getElementById("onlineDiscountType");
+const onlineDiscountValue = document.getElementById("onlineDiscountValue");
+
+const codDiscountType = document.getElementById("codDiscountType");
+const codDiscountValue = document.getElementById("codDiscountValue");
+
+const advanceDiscountType = document.getElementById("advanceDiscountType");
+const advanceDiscountValue = document.getElementById("advanceDiscountValue");
+
+const advanceType = document.getElementById("advanceType");
+const advanceValue = document.getElementById("advanceValue");
+
 // Variants & options state
 let colors = [];
 let sizes = [];
