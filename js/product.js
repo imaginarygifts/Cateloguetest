@@ -296,9 +296,8 @@ window.buyNow = function () {
     name: "Imaginary Gifts",
     description: product.name,
     image: product.images?.[0] || "",
-handler: function (response) {
-  alert("Payment Successful!");
-}
+    handler: function (response) {
+      alert("Payment Successful!");
 
       let msg = `✅ Payment Received\n\n`;
       msg += `Product: ${product.name}\n`;
