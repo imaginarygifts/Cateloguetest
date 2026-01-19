@@ -91,6 +91,86 @@
     <div id="editCustomList"></div>
 
   </div>
+<!-- PAYMENT & DISCOUNTS -->
+<div class="accordion">
+  <div class="accordion-header" onclick="toggleSection('paymentSection')">
+    💳 Payment & Discounts
+  </div>
+
+  <div id="paymentSection" class="accordion-body hidden">
+
+    <h4>Payment Methods</h4>
+
+    <label>
+      <input type="checkbox" id="allowOnline" checked>
+      Allow Online Payment
+    </label>
+
+    <label>
+      <input type="checkbox" id="allowCOD">
+      Allow Cash on Delivery
+    </label>
+
+    <label>
+      <input type="checkbox" id="allowAdvance">
+      Allow Advance Payment
+    </label>
+
+    <hr>
+
+    <h4>Discounts</h4>
+
+    <!-- Online Discount -->
+    <div class="row">
+      <label>Online Discount</label>
+      <select id="onlineDiscountType">
+        <option value="none">None</option>
+        <option value="percent">%</option>
+        <option value="flat">₹</option>
+      </select>
+      <input type="number" id="onlineDiscountValue" placeholder="Value">
+    </div>
+
+    <!-- COD Discount -->
+    <div class="row">
+      <label>COD Discount</label>
+      <select id="codDiscountType">
+        <option value="none">None</option>
+        <option value="percent">%</option>
+        <option value="flat">₹</option>
+      </select>
+      <input type="number" id="codDiscountValue" placeholder="Value">
+    </div>
+
+    <!-- Advance Discount -->
+    <div class="row">
+      <label>Advance Discount</label>
+      <select id="advanceDiscountType">
+        <option value="none">None</option>
+        <option value="percent">%</option>
+        <option value="flat">₹</option>
+      </select>
+      <input type="number" id="advanceDiscountValue" placeholder="Value">
+    </div>
+
+    <hr>
+
+    <h4>Advance Booking</h4>
+
+    <div class="row">
+      <label>Advance Amount</label>
+      <select id="advanceType">
+        <option value="percent">%</option>
+        <option value="flat">₹</option>
+      </select>
+      <input type="number" id="advanceValue" placeholder="Advance value">
+    </div>
+
+  </div>
+</div>
+
+
+
 
   <button class="btn" onclick="updateProduct()">Update Product</button>
 
