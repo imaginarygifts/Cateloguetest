@@ -296,6 +296,7 @@ window.buyNow = function () {
     name: "Imaginary Gifts",
     description: product.name,
     image: product.images?.[0] || "",
+
     handler: function (response) {
   const msg = `Payment Successful!\n\nProduct: ${product.name}\nAmount: ₹${finalPrice}\nPayment ID: ${response.razorpay_payment_id}`;
 
