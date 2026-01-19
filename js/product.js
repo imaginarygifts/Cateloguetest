@@ -290,7 +290,7 @@ window.buyNow = function () {
   }
 
   const options = {
-    key: "rzp_test_8OmRCO9SiPeXWg", // TEST KEY
+    key: "rzp_live_pfVyI37GhqWTGK", // TEST KEY
     amount: Math.round(finalPrice * 100), // in paise
     currency: "INR",
     name: "Imaginary Gifts",
