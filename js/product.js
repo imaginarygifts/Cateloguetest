@@ -295,8 +295,8 @@ window.buyNow = function () {
   if (selected.color) note += ` | Color: ${selected.color.name}`;
   if (selected.size) note += ` | Size: ${selected.size.name}`;
 
-  const options = {
-    key: "rzp_live_pfVyI37GhqWTGK", // Your key
+  const options = { 
+"key: "rzp_test_8OmRCO9SiPeXWg" // Your key
     amount: finalPrice * 100, // Razorpay uses paise
     currency: "INR",
     name: "Imaginary Gifts",
