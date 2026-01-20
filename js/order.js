@@ -56,14 +56,38 @@ function renderSummary() {
 function setupPaymentModes() {
   const ps = orderData.product.paymentSettings || {};
 
+  const onlineRadio = document.querySelector("input[value='online']");
+  const codLabel = document.getElementById("codOption");
+  const advanceLabel = document.getElementById("advanceOption");
+
+  // Online (always fallback)
+  if (!ps.online?.enabled) {
+    onlineRadio.closest("label").classList.add("hidden");
+  }
+
+  // COD
   if (!ps.cod?.enabled) {
-    document.getElementById("codOption")?.classList.add("hidden");
+    codLabel.classList.add("hidden");
   }
 
+  // Advance
   if (!ps.advance?.enabled) {
-    document.getElementById("advanceOption")?.classList.add("hidden");
+    advanceLabel.classList.add("hidden");
   }
 
+  // Auto select first enabled option
+  let firstEnabled = null;
+
+  if (ps.online?.enabled) firstEnabled = "online";
+  else if (ps.cod?.enabled) firstEnabled = "cod";
+  else if (ps.advance?.enabled) firstEnabled = "advance";
+
+  if (firstEnabled) {
+    document.querySelector(`input[value="${firstEnabled}"]`).checked = true;
+    selectedPaymentMode = firstEnabled;
+  }
+
+  // Attach change listeners
   document.querySelectorAll("input[name='paymode']").forEach(radio => {
     radio.addEventListener("change", () => {
       selectedPaymentMode = radio.value;
