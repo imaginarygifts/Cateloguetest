@@ -4,10 +4,7 @@ let subTotal = 0;
 let discount = 0;
 let finalAmount = 0;
 let appliedCoupon = null;
-
 let selectedPaymentMode = "online";
-let payableAmount = 0;
-let balanceAmount = 0;
 
 // ===== LOAD ORDER DATA =====
 function loadOrder() {
@@ -52,42 +49,25 @@ function renderSummary() {
   box.innerHTML = html;
 }
 
-// ===== PAYMENT MODES =====
+// ===== PAYMENT MODE FILTER =====
 function setupPaymentModes() {
   const ps = orderData.product.paymentSettings || {};
 
-  const onlineRadio = document.querySelector("input[value='online']");
+  const onlineLabel = document.getElementById("onlineOption");
   const codLabel = document.getElementById("codOption");
   const advanceLabel = document.getElementById("advanceOption");
 
-  // Online (always fallback)
-  if (!ps.online?.enabled) {
-    onlineRadio.closest("label").classList.add("hidden");
-  }
+  if (!ps.online?.enabled && onlineLabel) onlineLabel.style.display = "none";
+  if (!ps.cod?.enabled && codLabel) codLabel.style.display = "none";
+  if (!ps.advance?.enabled && advanceLabel) advanceLabel.style.display = "none";
 
-  // COD
-  if (!ps.cod?.enabled) {
-    codLabel.classList.add("hidden");
-  }
+  if (ps.online?.enabled) selectedPaymentMode = "online";
+  else if (ps.cod?.enabled) selectedPaymentMode = "cod";
+  else if (ps.advance?.enabled) selectedPaymentMode = "advance";
 
-  // Advance
-  if (!ps.advance?.enabled) {
-    advanceLabel.classList.add("hidden");
-  }
+  const firstRadio = document.querySelector(`input[value="${selectedPaymentMode}"]`);
+  if (firstRadio) firstRadio.checked = true;
 
-  // Auto select first enabled option
-  let firstEnabled = null;
-
-  if (ps.online?.enabled) firstEnabled = "online";
-  else if (ps.cod?.enabled) firstEnabled = "cod";
-  else if (ps.advance?.enabled) firstEnabled = "advance";
-
-  if (firstEnabled) {
-    document.querySelector(`input[value="${firstEnabled}"]`).checked = true;
-    selectedPaymentMode = firstEnabled;
-  }
-
-  // Attach change listeners
   document.querySelectorAll("input[name='paymode']").forEach(radio => {
     radio.addEventListener("change", () => {
       selectedPaymentMode = radio.value;
@@ -98,41 +78,8 @@ function setupPaymentModes() {
 
 // ===== PRICE =====
 function recalcPrice() {
-  const ps = orderData.product.paymentSettings || {};
-  discount = 0;
-  finalAmount = subTotal;
-
-  let rule = null;
-
-  if (selectedPaymentMode === "online") rule = ps.online;
-  if (selectedPaymentMode === "cod") rule = ps.cod;
-  if (selectedPaymentMode === "advance") rule = ps.advance;
-
-  if (rule && rule.discountValue) {
-    if (rule.discountType === "percent") {
-      discount = Math.round(finalAmount * (rule.discountValue / 100));
-    } else if (rule.discountType === "flat") {
-      discount = rule.discountValue;
-    }
-  }
-
-  finalAmount = finalAmount - discount;
+  finalAmount = subTotal - discount;
   if (finalAmount < 0) finalAmount = 0;
-
-  if (selectedPaymentMode === "advance") {
-    if (rule.type === "percent") {
-      payableAmount = Math.round(finalAmount * (rule.value / 100));
-    } else {
-      payableAmount = rule.value;
-    }
-    balanceAmount = finalAmount - payableAmount;
-  } else if (selectedPaymentMode === "online") {
-    payableAmount = finalAmount;
-    balanceAmount = 0;
-  } else {
-    payableAmount = 0;
-    balanceAmount = finalAmount;
-  }
 
   document.getElementById("subTotal").innerText = "₹" + subTotal;
   document.getElementById("discountAmount").innerText = "-₹" + discount;
@@ -147,11 +94,13 @@ window.applyCoupon = function () {
   if (!code) return;
 
   if (code === "WELCOME10") {
-    discount += Math.round(subTotal * 0.1);
+    discount = Math.round(subTotal * 0.1);
     appliedCoupon = code;
     msg.innerText = "Coupon applied: 10% OFF";
     msg.style.color = "#00ff9c";
   } else {
+    discount = 0;
+    appliedCoupon = null;
     msg.innerText = "Invalid coupon";
     msg.style.color = "red";
   }
@@ -190,10 +139,10 @@ window.placeOrder = function () {
 function sendWhatsApp(mode, paymentId = null) {
   let msg = `🛍 New Order — Imaginary Gifts\n\n`;
 
-  msg += `Name: ${document.getElementById("custName").value}\n`;
-  msg += `Phone: ${document.getElementById("custPhone").value}\n`;
-  msg += `Address: ${document.getElementById("custAddress").value}\n`;
-  msg += `Pincode: ${document.getElementById("custPincode").value}\n\n`;
+  msg += `Name: ${custName.value}\n`;
+  msg += `Phone: ${custPhone.value}\n`;
+  msg += `Address: ${custAddress.value}\n`;
+  msg += `Pincode: ${custPincode.value}\n\n`;
 
   msg += `Product: ${orderData.product.name}\n`;
 
@@ -214,11 +163,6 @@ function sendWhatsApp(mode, paymentId = null) {
   msg += `Total: ₹${finalAmount}\n`;
   msg += `Payment Mode: ${mode}\n`;
 
-  if (selectedPaymentMode === "advance") {
-    msg += `Paid: ₹${payableAmount}\n`;
-    msg += `Balance: ₹${balanceAmount}\n`;
-  }
-
   if (paymentId) msg += `Payment ID: ${paymentId}\n`;
 
   const url = `https://wa.me/917030191819?text=${encodeURIComponent(msg)}`;
@@ -229,7 +173,7 @@ function sendWhatsApp(mode, paymentId = null) {
 function startPayment(customer) {
   const options = {
     key: "rzp_live_pfVyI37GhqWTGK",
-    amount: payableAmount * 100,
+    amount: finalAmount * 100,
     currency: "INR",
     name: "Imaginary Gifts",
     description: "Order Payment",
