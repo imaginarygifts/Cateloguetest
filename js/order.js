@@ -5,6 +5,10 @@ let discount = 0;
 let finalAmount = 0;
 let appliedCoupon = null;
 
+let selectedPaymentMode = "online";
+let payableAmount = 0;
+let balanceAmount = 0;
+
 // ===== LOAD ORDER DATA =====
 function loadOrder() {
   const raw = localStorage.getItem("checkoutData");
@@ -18,6 +22,7 @@ function loadOrder() {
   subTotal = orderData.finalPrice;
 
   renderSummary();
+  setupPaymentModes();
   recalcPrice();
 }
 
@@ -44,13 +49,66 @@ function renderSummary() {
     });
   }
 
-  document.getElementById("orderSummary").innerHTML = html;
+  box.innerHTML = html;
+}
+
+// ===== PAYMENT MODES =====
+function setupPaymentModes() {
+  const ps = orderData.product.paymentSettings || {};
+
+  if (!ps.cod?.enabled) {
+    document.getElementById("codOption")?.classList.add("hidden");
+  }
+
+  if (!ps.advance?.enabled) {
+    document.getElementById("advanceOption")?.classList.add("hidden");
+  }
+
+  document.querySelectorAll("input[name='paymode']").forEach(radio => {
+    radio.addEventListener("change", () => {
+      selectedPaymentMode = radio.value;
+      recalcPrice();
+    });
+  });
 }
 
 // ===== PRICE =====
 function recalcPrice() {
-  finalAmount = subTotal - discount;
+  const ps = orderData.product.paymentSettings || {};
+  discount = 0;
+  finalAmount = subTotal;
+
+  let rule = null;
+
+  if (selectedPaymentMode === "online") rule = ps.online;
+  if (selectedPaymentMode === "cod") rule = ps.cod;
+  if (selectedPaymentMode === "advance") rule = ps.advance;
+
+  if (rule && rule.discountValue) {
+    if (rule.discountType === "percent") {
+      discount = Math.round(finalAmount * (rule.discountValue / 100));
+    } else if (rule.discountType === "flat") {
+      discount = rule.discountValue;
+    }
+  }
+
+  finalAmount = finalAmount - discount;
   if (finalAmount < 0) finalAmount = 0;
+
+  if (selectedPaymentMode === "advance") {
+    if (rule.type === "percent") {
+      payableAmount = Math.round(finalAmount * (rule.value / 100));
+    } else {
+      payableAmount = rule.value;
+    }
+    balanceAmount = finalAmount - payableAmount;
+  } else if (selectedPaymentMode === "online") {
+    payableAmount = finalAmount;
+    balanceAmount = 0;
+  } else {
+    payableAmount = 0;
+    balanceAmount = finalAmount;
+  }
 
   document.getElementById("subTotal").innerText = "₹" + subTotal;
   document.getElementById("discountAmount").innerText = "-₹" + discount;
@@ -64,15 +122,12 @@ window.applyCoupon = function () {
 
   if (!code) return;
 
-  // TEMP: static coupon logic (we'll connect Firebase later)
   if (code === "WELCOME10") {
-    discount = Math.round(subTotal * 0.1);
+    discount += Math.round(subTotal * 0.1);
     appliedCoupon = code;
     msg.innerText = "Coupon applied: 10% OFF";
     msg.style.color = "#00ff9c";
   } else {
-    discount = 0;
-    appliedCoupon = null;
     msg.innerText = "Invalid coupon";
     msg.style.color = "red";
   }
@@ -100,9 +155,7 @@ window.placeOrder = function () {
   const customer = validateForm();
   if (!customer) return;
 
-  const payMode = document.querySelector("input[name='paymode']:checked").value;
-
-  if (payMode === "cod") {
+  if (selectedPaymentMode === "cod") {
     sendWhatsApp("COD");
   } else {
     startPayment(customer);
@@ -137,6 +190,11 @@ function sendWhatsApp(mode, paymentId = null) {
   msg += `Total: ₹${finalAmount}\n`;
   msg += `Payment Mode: ${mode}\n`;
 
+  if (selectedPaymentMode === "advance") {
+    msg += `Paid: ₹${payableAmount}\n`;
+    msg += `Balance: ₹${balanceAmount}\n`;
+  }
+
   if (paymentId) msg += `Payment ID: ${paymentId}\n`;
 
   const url = `https://wa.me/917030191819?text=${encodeURIComponent(msg)}`;
@@ -146,8 +204,8 @@ function sendWhatsApp(mode, paymentId = null) {
 // ===== RAZORPAY =====
 function startPayment(customer) {
   const options = {
-    key: "rzp_live_pfVyI37GhqWTGK", // Replace with LIVE later
-    amount: finalAmount * 100,
+    key: "rzp_live_pfVyI37GhqWTGK",
+    amount: payableAmount * 100,
     currency: "INR",
     name: "Imaginary Gifts",
     description: "Order Payment",
