@@ -8,7 +8,10 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
-
+<div class="top-bar">
+  <span class="back-btn" onclick="goBack()">←</span>
+  <span class="title">Checkout</span>
+</div>
   <div class="checkout-page">
     <div class="glass-card">
 
@@ -90,5 +93,11 @@
   </div>
 
   <script src="js/order.js"></script>
+
+<script>
+  function goBack() {
+    history.back();
+  }
+</script>
 </body>
 </html>
