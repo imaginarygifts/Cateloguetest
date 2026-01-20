@@ -262,6 +262,32 @@ window.saveProduct = async () => {
     return;
   }
 
+
+const paymentSettings = {
+  online: {
+    enabled: allowOnline.checked,
+    discountType: onlineDiscountType.value,
+    discountValue: Number(onlineDiscountValue.value || 0)
+  },
+  cod: {
+    enabled: allowCOD.checked,
+    discountType: codDiscountType.value,
+    discountValue: Number(codDiscountValue.value || 0)
+  },
+  advance: {
+    enabled: allowAdvance.checked,
+    discountType: advanceDiscountType.value,
+    discountValue: Number(advanceDiscountValue.value || 0),
+    type: advanceType.value,
+    value: Number(advanceValue.value || 0)
+  }
+};
+
+
+
+
+
+
   try {
     showPopup("Uploading images...");
 
@@ -287,6 +313,7 @@ window.saveProduct = async () => {
         sizes
       },
       customOptions,
+paymentSettings,
       relatedDesigns,
       createdAt: Date.now()
     });
