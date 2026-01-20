@@ -5,13 +5,13 @@
   <title>Checkout</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/order.css" />
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
   <div class="checkout-page">
-
     <div class="glass-card">
+
       <h2>Checkout</h2>
 
       <!-- Customer Details -->
@@ -42,18 +42,19 @@
       <!-- Payment Mode -->
       <div class="section">
         <h3>Payment Method</h3>
+
         <div class="radio-group">
-          <label>
-            <input type="radio" name="paymode" value="online" checked />
+          <label id="onlineOption">
+            <input type="radio" name="paymode" value="online" />
             Online Payment
           </label>
 
-          <label id="codOption" class="hidden">
+          <label id="codOption">
             <input type="radio" name="paymode" value="cod" />
             Cash on Delivery
           </label>
 
-          <label id="advanceOption" class="hidden">
+          <label id="advanceOption">
             <input type="radio" name="paymode" value="advance" />
             Pay Advance
           </label>
@@ -63,6 +64,7 @@
       <!-- Price Breakdown -->
       <div class="section">
         <h3>Price Breakdown</h3>
+
         <div class="price-row">
           <span>Subtotal</span>
           <span id="subTotal">₹0</span>
@@ -80,10 +82,9 @@
       </div>
 
     </div>
-
   </div>
 
-  <!-- Sticky Bottom Bar -->
+  <!-- Sticky Bottom -->
   <div class="checkout-bottom">
     <button class="pay-btn" onclick="placeOrder()">Continue to Payment</button>
   </div>
