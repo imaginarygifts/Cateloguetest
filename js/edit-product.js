@@ -124,6 +124,31 @@ async function loadProduct() {
   customOptions = p.customOptions || [];
   relatedDesigns = p.relatedDesigns || [];
 
+// ===== LOAD PAYMENT SETTINGS =====
+const ps = p.paymentSettings || {};
+
+if (ps.online) {
+  allowOnline.checked = ps.online.enabled ?? true;
+  onlineDiscountType.value = ps.online.discountType || "none";
+  onlineDiscountValue.value = ps.online.discountValue || "";
+}
+
+if (ps.cod) {
+  allowCOD.checked = ps.cod.enabled ?? false;
+  codDiscountType.value = ps.cod.discountType || "none";
+  codDiscountValue.value = ps.cod.discountValue || "";
+}
+
+if (ps.advance) {
+  allowAdvance.checked = ps.advance.enabled ?? false;
+  advanceDiscountType.value = ps.advance.discountType || "none";
+  advanceDiscountValue.value = ps.advance.discountValue || "";
+  advanceType.value = ps.advance.type || "percent";
+  advanceValue.value = ps.advance.value || "";
+}
+
+
+
   renderImagePreview();
   renderColors();
   renderSizes();
