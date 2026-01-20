@@ -262,6 +262,20 @@ window.saveProduct = async () => {
     return;
   }
 
+  try {
+    showPopup("Uploading images...");
+
+    const uploadedImages = [];
+
+    for (let file of images) {
+      const r = ref(storage, `products/${Date.now()}-${file.name}`);
+      await uploadBytes(r, file);
+      const url = await getDownloadURL(r);
+      uploadedImages.push(url);
+    }
+
+    showPopup("Saving product...");
+
 
 const paymentSettings = {
   online: {
@@ -286,21 +300,6 @@ const paymentSettings = {
 
 
 
-
-
-  try {
-    showPopup("Uploading images...");
-
-    const uploadedImages = [];
-
-    for (let file of images) {
-      const r = ref(storage, `products/${Date.now()}-${file.name}`);
-      await uploadBytes(r, file);
-      const url = await getDownloadURL(r);
-      uploadedImages.push(url);
-    }
-
-    showPopup("Saving product...");
 
     const docRef = await addDoc(collection(db, "products"), {
       name,
