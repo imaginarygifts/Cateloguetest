@@ -123,8 +123,8 @@ async function loadProduct() {
   sizes = p.variants?.sizes || [];
   customOptions = p.customOptions || [];
   relatedDesigns = p.relatedDesigns || [];
-
-// ===== LOAD PAYMENT SETTINGS =====
+  
+  // ===== LOAD PAYMENT SETTINGS =====
 const ps = p.paymentSettings || {};
 
 if (ps.online) {
@@ -370,8 +370,10 @@ window.updateProduct = async () => {
     }
 
     showPopup("Saving changes...");
-
-const paymentSettings = {
+    
+    
+    
+    const paymentSettings = {
   online: {
     enabled: allowOnline.checked,
     discountType: onlineDiscountType.value,
@@ -391,9 +393,6 @@ const paymentSettings = {
   }
 };
 
-
-
-
     // Update THIS product
     await updateDoc(doc(db, "products", id), {
       name,
@@ -406,7 +405,7 @@ const paymentSettings = {
         sizes
       },
       customOptions,
-paymentSettings,
+      paymentSettings,
       relatedDesigns
     });
 
