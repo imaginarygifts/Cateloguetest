@@ -332,7 +332,19 @@ window.updateProduct = async () => {
     return;
   }
 
+  try {
+    showPopup("Uploading images...");
 
+    const finalImages = [...existingImages];
+
+    for (let file of newImages) {
+      const r = ref(storage, `products/${Date.now()}-${file.name}`);
+      await uploadBytes(r, file);
+      const url = await getDownloadURL(r);
+      finalImages.push(url);
+    }
+
+    showPopup("Saving changes...");
 
 const paymentSettings = {
   online: {
@@ -356,21 +368,6 @@ const paymentSettings = {
 
 
 
-
-
-  try {
-    showPopup("Uploading images...");
-
-    const finalImages = [...existingImages];
-
-    for (let file of newImages) {
-      const r = ref(storage, `products/${Date.now()}-${file.name}`);
-      await uploadBytes(r, file);
-      const url = await getDownloadURL(r);
-      finalImages.push(url);
-    }
-
-    showPopup("Saving changes...");
 
     // Update THIS product
     await updateDoc(doc(db, "products", id), {
